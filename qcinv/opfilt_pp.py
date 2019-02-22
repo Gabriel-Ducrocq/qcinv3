@@ -1,7 +1,8 @@
 # opfilt_pp
 #
 # operations and filters for polarization only c^-1
-# S^{-1} (S^{-1} + Y^t N^{-1} Y)^{-1} Y^t N^{-1}
+# (S^{-1} + Y^t N^{-1} Y) S soltn = Y^t N^{-1} data
+# -> wf_soltn = S Y soltn
 
 import os, hashlib
 import numpy  as np
