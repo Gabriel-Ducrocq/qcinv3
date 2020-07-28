@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 
-import util
-import util_alm
+from . import util
+from . import util_alm
 
 ## monitors
 logger_basic = (lambda iter, eps, watch=None, **kwargs : sys.stdout.write( '[' + str(watch.elapsed()) + '] ' + str((iter, eps)) + '\n' ))

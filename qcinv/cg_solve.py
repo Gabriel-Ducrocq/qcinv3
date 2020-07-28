@@ -5,12 +5,12 @@ def cg_solve_simple( x, b, fwd_op, pre_op, dot_op, iter_max=1000, eps_min=1.0e-5
     my_cg_iterator = cg_iterator( x, b, fwd_op, pre_op, dot_op, roundoff )
 
     #initialize.
-    (delta, resid) = my_cg_iterator.next()
+    (delta, resid) = next(my_cg_iterator)
     d0 = delta
 
     #loop
-    for iter in xrange(1,iter_max+1):
-        (delta, resid) = my_cg_iterator.next()
+    for iter in range(1,iter_max+1):
+        (delta, resid) = next(my_cg_iterator)
 
         if (delta < eps_min**2 * d0): break
 
@@ -21,11 +21,11 @@ def cg_solve(soltn, b, fwd_op, pre_op, dot_op, criterion, apply_prep_op=None, ap
     if (apply_prep_op is not None): apply_prep_op(b)
     
     cg_iter        = cg_iterator( soltn, b, fwd_op, pre_op, dot_op )
-    (delta, resid) = cg_iter.next()
+    (delta, resid) = next(cg_iter)
 
     iter = 0
     while criterion(iter, soltn, resid, delta) == False:
-        (delta, resid) = cg_iter.next()
+        (delta, resid) = next(cg_iter)
         iter += 1
 
     if (apply_fini_op is not None): apply_fini_op(soltn)

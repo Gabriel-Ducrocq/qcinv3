@@ -9,9 +9,9 @@ import numpy  as np
 import healpy as hp
 import pickle as pk
 
-import util
-import util_alm
-import template_removal
+from . import util
+from . import util_alm
+from . import template_removal
 
 class eblm():
     def __init__(self, alm ):
@@ -53,9 +53,9 @@ class eblm():
         return eblm( [self.elm * other, self.blm * other] )
 	
     def __getitem__(self,key):
-		if key==0: return self.elm
-		elif key==1: return self.blm
-		else: raise IndexError()
+        if key==0: return self.elm
+        elif key==1: return self.blm
+        else: raise IndexError()
 # ===
 
 def calc_prep(maps, s_cls, n_inv_filt):
@@ -133,7 +133,7 @@ class pre_op_diag():
 
         flmat = s_inv_filt.slinv[0:lmax+1,:,:]
 
-        for l in xrange(0,lmax+1):
+        for l in range(0,lmax+1):
             flmat[l,0,0] += ninv_fel[l]
             flmat[l,1,1] += ninv_fbl[l]
 
@@ -163,7 +163,7 @@ class pre_op_dense():
             self.minv = cache_minv
 
             if ( (lmax != cache_lmax) or (self.hashdict(lmax, fwd_op) != cache_hashdict) ):
-                print "WARNING: PRE_OP_DENSE CACHE: hashcheck failed. recomputing."
+                print("WARNING: PRE_OP_DENSE CACHE: hashcheck failed. recomputing.")
                 os.remove(cache_fname)
                 self.compute_minv(lmax, fwd_op, cache_fname=cache_fname)
         else:
@@ -193,17 +193,17 @@ class pre_op_dense():
             ntmpl += t.nmodes
         ntmpl += 8 # (1 mono + 3 dip) * (e+b)
 
-        print "computing dense preconditioner:"
-        print "     lmax  =", lmax
-        print "     ntmpl =", ntmpl
+        print("computing dense preconditioner:")
+        print("     lmax  =", lmax)
+        print("     ntmpl =", ntmpl)
 
         for i in np.arange(0, nrlm):
-            if np.mod(i, int( 0.1 * nrlm) ) == 0: print ("   filling M: %4.1f" % (100. * i / nrlm)), "%"
+            if np.mod(i, int( 0.1 * nrlm) ) == 0: print(("   filling M: %4.1f" % (100. * i / nrlm)), "%")
             trlm[i]   = 1.0
             tmat[:,i] = self.alm2rlm( fwd_op( self.rlm2alm(trlm) ) )
             trlm[i]   = 0.0
 
-        print "   inverting M..."
+        print("   inverting M...")
         eigv, eigw = np.linalg.eigh( tmat )
 
         eigv_inv = 1.0 / eigv
@@ -211,8 +211,8 @@ class pre_op_dense():
         if ntmpl > 0:
             # do nothing to the ntmpl eigenmodes
             # with the lowest eigenvalues.
-            print "     eigv[ntmpl-1] = ", eigv[ntmpl-1]
-            print "     eigv[ntmpl]   = ", eigv[ntmpl]
+            print("     eigv[ntmpl-1] = ", eigv[ntmpl-1])
+            print("     eigv[ntmpl]   = ", eigv[ntmpl])
             eigv_inv[0:ntmpl] = 1.0
 
         self.minv = np.dot( np.dot( eigw, np.diag(eigv_inv)), np.transpose(eigw) )
@@ -243,7 +243,7 @@ class alm_filter_sinv():
         slmat[:,1,1] = getattr(s_cls, 'clbb', zs.copy())[:]
         
         slinv = np.zeros( (lmax+1, 2, 2) )
-        for l in xrange(0, lmax+1):
+        for l in range(0, lmax+1):
             slinv[l,:,:] = np.linalg.pinv( slmat[l] )
             
         self.lmax  = lmax
@@ -289,7 +289,7 @@ class alm_filter_ninv():
         if (len(templates_p) != 0):
             nmodes = np.sum([t.nmodes for t in templates_p])
             modes_idx_t = np.concatenate(([t.nmodes*[int(im)] for im, t in enumerate(templates_p)]))
-            modes_idx_i = np.concatenate(([range(0,t.nmodes) for t in templates_p]))
+            modes_idx_i = np.concatenate(([list(range(0,t.nmodes)) for t in templates_p]))
             
             Pt_Nn1_P = np.zeros((nmodes, nmodes))
             for ir in range(0, nmodes):

@@ -1,14 +1,14 @@
 import numpy  as np
 import healpy as hp
 
-import util_alm
+from . import util_alm
 
 def map2vlm( m, lmax, iter=0 ):
     alm_re = hp.map2alm( m.real.copy(), lmax=lmax, iter=iter, regression=False )
     alm_im = hp.map2alm( m.imag.copy(), lmax=lmax, iter=iter, regression=False )
 
     ret = np.zeros( (lmax+1)**2, dtype=np.complex )
-    for l in xrange(0, lmax+1):
+    for l in range(0, lmax+1):
         ms = np.arange(1,l+1)
         ret[l*l+l]    = alm_re[l] + 1.j * alm_im[l]
         ret[l*l+l+ms] = alm_re[ms * (2*lmax+1-ms)/2 + l] + 1.j * alm_im[ms * (2*lmax+1-ms)/2 + l]
@@ -21,7 +21,7 @@ def vlm2alm_gc( vlm ):
     glm = np.zeros( util_alm.lmax2nlm(lmax), dtype=np.complex )
     clm = np.zeros( util_alm.lmax2nlm(lmax), dtype=np.complex )
 
-    for l in xrange(0, lmax+1):
+    for l in range(0, lmax+1):
         ms = np.arange(1,l+1)
 
         glm[l] = vlm[l*l+l].real
@@ -43,7 +43,7 @@ def vlm_cl_cross(vlm1, vlm2, lmax=None):
     assert(lmax <= min(vlm1_lmax, vlm2_lmax))
 
     ret = np.zeros(lmax+1, dtype=np.complex)
-    for l in xrange(0, lmax+1):
+    for l in range(0, lmax+1):
         ret[l] = np.sum( vlm1[(l*l):(l+1)*(l+1)] * np.conj( vlm2[(l*l):(l+1)*(l+1)]) ) / (2.*l+1.)
     return ret
 
@@ -63,9 +63,9 @@ def vlm_cl_cross_gc(vlm1, vlm2, lmax=None):
 
     retg = np.zeros(lmax+1)
     retc = np.zeros(lmax+1)
-    for l in xrange(0, lmax+1):
+    for l in range(0, lmax+1):
         tmon = np.sum( vlm1[(l*l):(l+1)*(l+1)] * np.conj( vlm2[(l*l):(l+1)*(l+1)]) )  / (2.*l+1.) * 0.5
-        tdif = np.sum( vlm1[(l*l):(l+1)*(l+1)] * vlm2[(l*l):(l+1)*(l+1)][::-1] * np.array([(-1)**m for m in xrange(-l,l+1)]) ).real / (2.*l+1.) * 0.5
+        tdif = np.sum( vlm1[(l*l):(l+1)*(l+1)] * vlm2[(l*l):(l+1)*(l+1)][::-1] * np.array([(-1)**m for m in range(-l,l+1)]) ).real / (2.*l+1.) * 0.5
 
         retg[l] = tmon + tdif
         retc[l] = tmon - tdif

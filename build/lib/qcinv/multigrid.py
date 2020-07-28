@@ -1,10 +1,10 @@
 import sys, os, re, glob, copy
 import numpy as np
 
-import util
-import util_alm
-import cd_solve
-import cd_monitors
+from . import util
+from . import util_alm
+from . import cd_solve
+from . import cd_monitors
 
 # ===
 
@@ -36,12 +36,10 @@ class multigrid_chain():
             stages[id] = multigrid_stage( id, pre_ops_descr, lmax, nside, iter_max, eps_min, tr, cache )
             
             for pre_op_descr in pre_ops_descr:
-                stages[id].pre_ops.append( parse_pre_op_descr(pre_op_descr, opfilt=self.opfilt,
-                                                              s_cls=self.s_cls, n_inv_filt=self.n_inv_filt,
-                                                              stages=stages, lmax=lmax, nside=nside, chain=self) )
+                stages[id].pre_ops.append( parse_pre_op_descr(pre_op_descr, opfilt=self.opfilt,s_cls=self.s_cls, n_inv_filt=self.n_inv_filt,stages=stages, lmax=lmax, nside=nside, chain=self) )
         self.bstage = stages[0]
 
-    def solve( self, soltn, tpn_map ):
+    def solve( self, soltn, tpn_map, fluctuations):
         self.watch = util.stopwatch()
 
         self.iter_tot   = 0        
@@ -53,7 +51,10 @@ class multigrid_chain():
         monitor = cd_monitors.monitor_basic(self.opfilt.dot_op(), logger=logger, iter_max=self.bstage.iter_max, eps_min=self.bstage.eps_min)
 
         tpn_alm = self.opfilt.calc_prep(tpn_map, self.s_cls, self.n_inv_filt)
-
+        #### ADDED FLUCTUATIONS HERE !!
+        print("B System")
+        print(tpn_alm)
+        tpn_alm += fluctuations
         fwd_op  = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
 
         cd_solve.cd_solve( soltn, tpn_alm,
@@ -78,13 +79,30 @@ class multigrid_chain():
             log.close()
 
             if (stage.depth == 0):
-                f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '.dat', 'a')
-                np.savetxt(f_handle, [[v for v in kwargs['soltn']]])
-                f_handle.close()
+                try:
+                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_e.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['soltn'].elm]])
+                    f_handle.close()
 
-                f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '.dat', 'a')
-                np.savetxt(f_handle, [[v for v in kwargs['resid']]])
-                f_handle.close()
+                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_b.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['soltn'].blm]])
+                    f_handle.close()
+
+                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_e.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['resid'].elm]])
+                    f_handle.close()
+
+                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_b.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['resid'].blm]])
+                    f_handle.close()
+                except AttributeError:
+                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['soltn']]])
+                    f_handle.close()
+
+                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '.dat', 'a')
+                    np.savetxt(f_handle, [[v for v in kwargs['resid']]])
+                    f_handle.close()
 
             log_str = '%05d %05d %10.6e %05d %s\n' % (self.iter_tot, int(elapsed), eps, iter, str(elapsed))
             log = open( self.debug_log_prefix + 'stage_' + str(stage.depth) + '.dat', 'a' )
@@ -107,7 +125,7 @@ class multigrid_chain():
 def parse_pre_op_descr(pre_op_descr, **kwargs):
     if re.match("split\((.*),\s*(.*),\s*(.*)\)\Z", pre_op_descr):
         (low_descr, lsplit, hgh_descr) = re.match("split\((.*),\s*(.*),\s*(.*)\)\Z", pre_op_descr).groups()
-        print 'creating split preconditioner ', (low_descr, lsplit, hgh_descr)
+        print('creating split preconditioner ', (low_descr, lsplit, hgh_descr))
 
         lsplit = int(lsplit)
 
@@ -121,7 +139,7 @@ def parse_pre_op_descr(pre_op_descr, **kwargs):
         return kwargs['opfilt'].pre_op_diag( kwargs['s_cls'], kwargs['n_inv_filt'] )
     elif re.match("dense\Z", pre_op_descr):
         #FIXME: remove this option in favor of dense() below.
-        print 'creating dense preconditioner. (nside = %d, lmax = %d)' % (kwargs['nside'], kwargs['lmax'])
+        print('creating dense preconditioner. (nside = %d, lmax = %d)' % (kwargs['nside'], kwargs['lmax']))
 
         fwd_op = kwargs['opfilt'].fwd_op( kwargs['s_cls'], kwargs['n_inv_filt'].degrade(kwargs['nside']) )
 
@@ -130,12 +148,12 @@ def parse_pre_op_descr(pre_op_descr, **kwargs):
         (dense_cache_fname,) = re.match("dense\((.*)\)\Z", pre_op_descr).groups()
         if dense_cache_fname == '': dense_cache_fname = None
 
-        print 'creating dense preconditioner. (nside = %d, lmax = %d, cache = %s)' % (kwargs['nside'], kwargs['lmax'], dense_cache_fname)
+        print('creating dense preconditioner. (nside = %d, lmax = %d, cache = %s)' % (kwargs['nside'], kwargs['lmax'], dense_cache_fname))
         fwd_op = kwargs['opfilt'].fwd_op( kwargs['s_cls'], kwargs['n_inv_filt'].degrade(kwargs['nside']) )
         return  kwargs['opfilt'].pre_op_dense( kwargs['lmax'], fwd_op, cache_fname=dense_cache_fname )
     elif re.match("stage\(.*\)\Z", pre_op_descr):
         (stage_id,) = re.match("stage\((.*)\)\Z", pre_op_descr).groups()
-        print 'creating multigrid preconditioner: stage_id = ', stage_id
+        print('creating multigrid preconditioner: stage_id = ', stage_id)
 
         stage    = kwargs['stages'][int(stage_id)]
         logger   = (lambda iter, eps, stage=stage, chain=kwargs['chain'], **kwargs :
@@ -148,7 +166,7 @@ def parse_pre_op_descr(pre_op_descr, **kwargs):
                                 stage.pre_ops, logger, stage.tr, stage.cache,
                                 stage.iter_max, stage.eps_min)
     else:
-        print 'pre_op_descr = ', pre_op_descr, ' is unrecognized!'
+        print('pre_op_descr = ', pre_op_descr, ' is unrecognized!')
         assert(0)
 
 # ===

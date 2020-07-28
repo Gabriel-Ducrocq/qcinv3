@@ -1,5 +1,5 @@
 import numpy as np
-import util
+from . import util
 
 # ===
 
@@ -28,7 +28,7 @@ def alm_cl_cross(alm1, alm2, lmax=None):
     assert(lmax <= min(alm1_lmax, alm2_lmax))
 
     ret    = np.zeros(lmax+1)
-    for l in xrange(0, lmax+1):
+    for l in range(0, lmax+1):
         ms = np.arange(1,l+1)
         ret[l]  = np.real(alm1[l] * alm2[l])
         ret[l] += 2.*np.sum( np.real(alm1[ms * (2*alm1_lmax+1-ms)/2 + l] * np.conj(alm2[ms * (2*alm2_lmax+1-ms)/2 + l])) )
@@ -54,7 +54,7 @@ def alm_splice(alm_lo, alm_hi, lsplit):
     assert( alm_hi_lmax >= lsplit )
 
     ret = np.copy(alm_hi)
-    for m in xrange(0, lsplit+1):
+    for m in range(0, lsplit+1):
         ret[(m*(2*alm_hi_lmax+1-m)/2 + m):(m*(2*alm_hi_lmax+1-m)/2+lsplit+1)] = alm_lo[(m*(2*alm_lo_lmax+1-m)/2 + m):(m*(2*alm_lo_lmax+1-m)/2+lsplit+1)]
     return ret
 
@@ -72,7 +72,7 @@ def alm_copy(alm, lmax=None):
         ret = np.copy(alm)
     else:
         ret = np.zeros(lmax2nlm(lmax), dtype=np.complex)
-        for m in xrange(0, lmax+1):
+        for m in range(0, lmax+1):
             ret[((m*(2*lmax+1-m)/2) + m):(m*(2*lmax+1-m)/2 + lmax + 1)] = alm[(m*(2*alm_lmax+1-m)/2 + m):(m*(2*alm_lmax+1-m)/2 +lmax+1)]
 
     return ret
@@ -90,7 +90,7 @@ def alm2rlm(alm):
     rt2 = np.sqrt(2.)
 
     rlm[l2s] = alm[ls].real
-    for m in xrange(1, lmax+1):
+    for m in range(1, lmax+1):
         rlm[l2s[m:] + 2*m - 1] = alm[m*(2*lmax+1-m)/2 + ls[m:]].real * rt2
         rlm[l2s[m:] + 2*m + 0] = alm[m*(2*lmax+1-m)/2 + ls[m:]].imag * rt2
     return rlm
@@ -108,6 +108,6 @@ def rlm2alm(rlm):
     ir2 = 1.0 / np.sqrt(2.)
 
     alm[ls] = rlm[l2s]
-    for m in xrange(1, lmax+1):
+    for m in range(1, lmax+1):
         alm[m*(2*lmax+1-m)/2 + ls[m:]] = (rlm[l2s[m:] + 2*m - 1] + 1.j * rlm[l2s[m:] + 2*m + 0]) * ir2
     return alm

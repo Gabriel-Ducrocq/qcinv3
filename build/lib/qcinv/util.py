@@ -42,7 +42,7 @@ class jit:
 
     def instantiate(self):
         [ctype, cargs, ckwds] = self.__dict__['__jit_args']
-        print 'jit: instantiating ctype =', ctype
+        print('jit: instantiating ctype =', ctype)
         self.__dict__['__jit_obj'] = ctype( *cargs, **ckwds )
         del self.__dict__['__jit_args']
 

@@ -11,12 +11,12 @@ import numpy  as np
 import healpy as hp
 import pickle as pk
 
-import util
-import util_alm
-import template_removal
+from . import util
+from . import util_alm
+from . import template_removal
 
-import opfilt_tt
-from opfilt_tt import apply_fini, dot_op
+from . import opfilt_tt
+from .opfilt_tt import apply_fini, dot_op
 
 def calc_prep(maps, s_cls, n_inv_filts):
     alm = opfilt_tt.calc_prep( maps[0], s_cls, n_inv_filts[0] )
@@ -92,7 +92,7 @@ class pre_op_dense():
             self.minv = cache_minv
 
             if ( (lmax != cache_lmax) or (self.hashdict(lmax, fwd_op) != cache_hashdict) ):
-                print "WARNING: PRE_OP_DENSE CACHE: hashcheck failed. recomputing."
+                print("WARNING: PRE_OP_DENSE CACHE: hashcheck failed. recomputing.")
                 os.remove(cache_fname)
                 self.compute_minv(lmax, fwd_op, cache_fname=cache_fname)
         else:
@@ -113,17 +113,17 @@ class pre_op_dense():
                 tntmpl += t.nmodes
             ntmpl = max(tntmpl, ntmpl)
 
-        print "computing dense preconditioner:"
-        print "     lmax  =", lmax
-        print "     ntmpl =", ntmpl
+        print("computing dense preconditioner:")
+        print("     lmax  =", lmax)
+        print("     ntmpl =", ntmpl)
 
         for i in np.arange(0, nrlm):
-            if np.mod(i, int( 0.1 * nrlm) ) == 0: print ("   filling M: %4.1f" % (100. * i / nrlm)), "%"
+            if np.mod(i, int( 0.1 * nrlm) ) == 0: print(("   filling M: %4.1f" % (100. * i / nrlm)), "%")
             trlm[i]   = 1.0
             tmat[:,i] = util_alm.alm2rlm( fwd_op( util_alm.rlm2alm(trlm) ) )
             trlm[i]   = 0.0
 
-        print "   inverting M..."
+        print("   inverting M...")
         eigv, eigw = np.linalg.eigh( tmat )
 
         eigv_inv = 1.0 / eigv
@@ -131,8 +131,8 @@ class pre_op_dense():
         if ntmpl > 0:
             # do nothing to the ntmpl eigenmodes
             # with the lowest eigenvalues.
-            print "     eigv[ntmpl-1] = ", eigv[ntmpl-1]
-            print "     eigv[ntmpl]   = ", eigv[ntmpl]
+            print("     eigv[ntmpl-1] = ", eigv[ntmpl-1])
+            print("     eigv[ntmpl]   = ", eigv[ntmpl])
             eigv_inv[0:ntmpl] = 1.0
 
         self.minv = np.dot( np.dot( eigw, np.diag(eigv_inv)), np.transpose(eigw) )
