@@ -65,7 +65,7 @@ def calc_prep(maps, s_cls, n_inv_filt):
 
     lmax  = len(n_inv_filt.b_transf) - 1
 
-    tlm  = hp.map2alm(tmap, lmax=lmax, iter=0)
+    tlm  = hp.map2alm(tmap, lmax=lmax, iter=0, regression=False)
     tlm *= npix / (4.*np.pi)
 
     elm, blm = hp.map2alm_spin( [qmap, umap], 2, lmax=lmax)
@@ -373,7 +373,7 @@ class alm_filter_ninv():
 
         self.apply_map( [tmap, qmap, umap] )
 
-        alm.tlm[:]  = hp.map2alm(tmap, lmax=lmax, iter=0)
+        alm.tlm[:]  = hp.map2alm(tmap, lmax=lmax, iter=0, regression=False)
         alm.tlm[:] *= (self.npix / (4.*np.pi))
 
         telm, tblm = hp.map2alm_spin( [qmap, umap], 2, lmax=lmax )

@@ -15,11 +15,9 @@ from . import template_removal
 def calc_prep(map, s_cls, n_inv_filt):
     tmap = np.copy(map)
     n_inv_filt.apply_map(tmap)
-
     lmax  = len(n_inv_filt.b_transf) - 1
     npix  = len(map)
-
-    alm = hp.map2alm(tmap, lmax=lmax, iter=0)
+    alm  = hp.map2alm(tmap, lmax=lmax, iter=3)
     alm *= npix / (4.*np.pi)
 
     hp.almxfl( alm, n_inv_filt.b_transf, inplace=True )
@@ -246,7 +244,6 @@ class alm_filter_ninv():
         npix = len(self.n_inv)
         
         hp.almxfl(alm, self.b_transf, inplace=True)
-
         tmap = hp.alm2map(alm, hp.npix2nside(npix))
 
         self.apply_map(tmap)
@@ -258,7 +255,6 @@ class alm_filter_ninv():
         
     def apply_map(self, tmap):
         # applies N^{-1}
-
         tmap *= self.n_inv
 
         if (len(self.templates) != 0):

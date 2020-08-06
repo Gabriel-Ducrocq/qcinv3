@@ -82,7 +82,7 @@ class template_dipole(template):
 
     def dot(self, tmap):
         npix = len(tmap)
-        return alm_to_xyz( hp.map2alm(tmap, lmax=1, iter=0) ) * npix / 3.
+        return alm_to_xyz( hp.map2alm(tmap, lmax=1, iter=0, regression=False) ) * npix / 3.
     
 def xyz_to_alm(xyz):
     assert( len(xyz) == 3 )

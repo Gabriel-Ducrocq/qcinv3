@@ -1,8 +1,7 @@
 # opfilt_pp
 #
 # operations and filters for polarization only c^-1
-# (S^{-1} + Y^t N^{-1} Y) S soltn = Y^t N^{-1} data
-# -> wf_soltn = S Y soltn
+# S^{-1} (S^{-1} + Y^t N^{-1} Y)^{-1} Y^t N^{-1}
 
 import os, hashlib
 import numpy  as np
@@ -51,11 +50,6 @@ class eblm():
 
     def __mul__(self, other):
         return eblm( [self.elm * other, self.blm * other] )
-	
-    def __getitem__(self,key):
-		if key==0: return self.elm
-		elif key==1: return self.blm
-		else: raise IndexError()
 # ===
 
 def calc_prep(maps, s_cls, n_inv_filt):
@@ -67,7 +61,7 @@ def calc_prep(maps, s_cls, n_inv_filt):
 
     lmax  = len(n_inv_filt.b_transf) - 1
 
-    tlm, elm, blm = hp.map2alm( [qmap, qmap, umap], lmax=lmax, iter=0, use_weights=False, pol=True )
+    tlm, elm, blm = hp.map2alm( [qmap, qmap, umap], lmax=lmax, iter=0, regression=False, use_weights=False, pol=True )
     del tlm
     elm *= npix / (4.*np.pi); blm *= npix / (4.*np.pi)
 
@@ -274,7 +268,7 @@ class alm_filter_ninv():
                 self.n_inv.append(util.load_map(n_inv[i]))
         n_inv = self.n_inv
 
-        #assert( len(n_inv) == 1 )
+        assert( len(n_inv) == 1 )
         npix  = len(n_inv[0])
         nside = hp.npix2nside(npix)
         for n in n_inv[1:]:
@@ -356,7 +350,7 @@ class alm_filter_ninv():
         self.apply_map( [qmap, umap] )
         npix = len(qmap)
 
-        ttlm, telm, tblm = hp.map2alm( [qmap, qmap, umap], lmax=lmax, iter=0, use_weights=False, pol=True )
+        ttlm, telm, tblm = hp.map2alm( [qmap, qmap, umap], lmax=lmax, iter=0, regression=False, use_weights=False, pol=True )
         del ttlm
         alm.elm[:] = telm * (npix / (4.*np.pi)); alm.blm[:] = tblm * (npix / (4.*np.pi))
         

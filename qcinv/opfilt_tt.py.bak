@@ -12,6 +12,8 @@ import util
 import util_alm
 import template_removal
 
+# ===
+
 def calc_prep(map, s_cls, n_inv_filt):
     tmap = np.copy(map)
     n_inv_filt.apply_map(tmap)
@@ -19,7 +21,7 @@ def calc_prep(map, s_cls, n_inv_filt):
     lmax  = len(n_inv_filt.b_transf) - 1
     npix  = len(map)
 
-    alm  = hp.map2alm(tmap, lmax=lmax, iter=0)
+    alm  = hp.map2alm(tmap, lmax=lmax, iter=0, regression=False)
     alm *= npix / (4.*np.pi)
 
     hp.almxfl( alm, n_inv_filt.b_transf, inplace=True )
@@ -251,7 +253,7 @@ class alm_filter_ninv():
 
         self.apply_map(tmap)
 
-        alm[:]  = hp.map2alm(tmap, lmax=util_alm.nlm2lmax(len(alm)), iter=0)
+        alm[:]  = hp.map2alm(tmap, lmax=util_alm.nlm2lmax(len(alm)), iter=0, regression=False)
         alm[:] *= (npix / (4.*np.pi))
         
         hp.almxfl(alm, self.b_transf, inplace=True)

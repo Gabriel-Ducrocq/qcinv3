@@ -31,7 +31,7 @@ def alm_cl_cross(alm1, alm2, lmax=None):
     for l in range(0, lmax+1):
         ms = np.arange(1,l+1)
         ret[l]  = np.real(alm1[l] * alm2[l])
-        ret[l] += 2.*np.sum( np.real(alm1[ms * (2*alm1_lmax+1-ms)/2 + l] * np.conj(alm2[ms * (2*alm2_lmax+1-ms)/2 + l])) )
+        ret[l] += 2.*np.sum( np.real(alm1[(ms * (2*alm1_lmax+1-ms)/2 + l).astype(int)] * np.conj(alm2[(ms * (2*alm2_lmax+1-ms)/2 + l).astype(int)])) )
         ret[l] /= (2.*l+1.)
     return ret
 

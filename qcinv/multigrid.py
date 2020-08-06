@@ -39,28 +39,6 @@ class multigrid_chain():
                 stages[id].pre_ops.append( parse_pre_op_descr(pre_op_descr, opfilt=self.opfilt,s_cls=self.s_cls, n_inv_filt=self.n_inv_filt,stages=stages, lmax=lmax, nside=nside, chain=self) )
         self.bstage = stages[0]
 
-    def sample(self, soltn, tpn_map, fluctuations):
-        self.watch = util.stopwatch()
-
-        self.iter_tot   = 0
-        self.prev_eps   = None
-
-        logger = (lambda iter, eps, stage=self.bstage, **kwargs :
-                  self.log(stage, iter, eps, **kwargs))
-
-        monitor = cd_monitors.monitor_basic(self.opfilt.dot_op(), logger=logger, iter_max=self.bstage.iter_max, eps_min=self.bstage.eps_min)
-        tpn_alm = self.opfilt.calc_prep(tpn_map, self.s_cls, self.n_inv_filt)
-        tpn_alm += fluctuations
-        fwd_op  = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
-
-        cd_solve.cd_solve( soltn, tpn_alm,
-                           fwd_op, self.bstage.pre_ops, self.opfilt.dot_op(), monitor,
-                           tr=self.bstage.tr, cache=self.bstage.cache )
-
-        self.opfilt.apply_fini( soltn, self.s_cls, self.n_inv_filt )
-
-        return tpn_alm
-
     def solve( self, soltn, tpn_map):
         self.watch = util.stopwatch()
 
@@ -71,9 +49,9 @@ class multigrid_chain():
                   self.log(stage, iter, eps, **kwargs))
 
         monitor = cd_monitors.monitor_basic(self.opfilt.dot_op(), logger=logger, iter_max=self.bstage.iter_max, eps_min=self.bstage.eps_min)
-
         tpn_alm = self.opfilt.calc_prep(tpn_map, self.s_cls, self.n_inv_filt)
-        fwd_op = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
+
+        fwd_op  = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
 
         cd_solve.cd_solve( soltn, tpn_alm,
                            fwd_op, self.bstage.pre_ops, self.opfilt.dot_op(), monitor,
@@ -102,6 +80,9 @@ class multigrid_chain():
         self.opfilt.apply_fini( soltn, self.s_cls, self.n_inv_filt )
 
         return tpn_alm
+
+
+
 
     def log(self, stage, iter, eps, **kwargs):
         self.iter_tot += 1
@@ -120,27 +101,27 @@ class multigrid_chain():
 
             if (stage.depth == 0):
                 try:
-                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_e.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_e.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['soltn'].elm]])
                     f_handle.close()
 
-                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_b.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '_b.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['soltn'].blm]])
                     f_handle.close()
 
-                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_e.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_e.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['resid'].elm]])
                     f_handle.close()
 
-                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_b.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '_b.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['resid'].blm]])
                     f_handle.close()
                 except AttributeError:
-                    f_handle = file(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_soltn_' + str(stage.depth) + '.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['soltn']]])
                     f_handle.close()
 
-                    f_handle = file(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '.dat', 'a')
+                    f_handle = open(self.debug_log_prefix + 'stage_resid_' + str(stage.depth) + '.dat', 'a')
                     np.savetxt(f_handle, [[v for v in kwargs['resid']]])
                     f_handle.close()
 
