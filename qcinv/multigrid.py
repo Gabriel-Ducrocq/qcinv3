@@ -51,8 +51,6 @@ class multigrid_chain():
         monitor = cd_monitors.monitor_basic(self.opfilt.dot_op(), logger=logger, iter_max=self.bstage.iter_max, eps_min=self.bstage.eps_min)
 
         tpn_alm = self.opfilt.calc_prep(tpn_map, self.s_cls, self.n_inv_filt)
-        print("B WEINER")
-        print(tpn_alm)
         fwd_op = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
 
         cd_solve.cd_solve( soltn, tpn_alm,
@@ -60,6 +58,28 @@ class multigrid_chain():
                            tr=self.bstage.tr, cache=self.bstage.cache )
 
         self.opfilt.apply_fini( soltn, self.s_cls, self.n_inv_filt )
+
+    def sample(self, soltn, tpn_map, fluctuations):
+        self.watch = util.stopwatch()
+
+        self.iter_tot   = 0
+        self.prev_eps   = None
+
+        logger = (lambda iter, eps, stage=self.bstage, **kwargs :
+                  self.log(stage, iter, eps, **kwargs))
+
+        monitor = cd_monitors.monitor_basic(self.opfilt.dot_op(), logger=logger, iter_max=self.bstage.iter_max, eps_min=self.bstage.eps_min)
+        tpn_alm = self.opfilt.calc_prep(tpn_map, self.s_cls, self.n_inv_filt)
+        tpn_alm += fluctuations
+        fwd_op  = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
+
+        cd_solve.cd_solve( soltn, tpn_alm,
+                           fwd_op, self.bstage.pre_ops, self.opfilt.dot_op(), monitor,
+                           tr=self.bstage.tr, cache=self.bstage.cache )
+
+        self.opfilt.apply_fini( soltn, self.s_cls, self.n_inv_filt )
+
+        return tpn_alm
 
     def log(self, stage, iter, eps, **kwargs):
         self.iter_tot += 1

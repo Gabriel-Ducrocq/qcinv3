@@ -2,32 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e51415e9-4954-4b52-956f-405f11b0976c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/cd_monitors.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/cd_monitors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/cd_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/cd_solve.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/cg_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/cg_solve.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/multigrid.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/multigrid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/opfilt_pp.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/opfilt_pp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/opfilt_pp_multi_simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/opfilt_pp_multi_simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tp.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tt.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tt_multi_simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/opfilt_tt_multi_simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/util_alm.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/util_alm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/lib/qcinv/util_vlm.py" beforeDir="false" afterPath="$PROJECT_DIR$/build/lib/qcinv/util_vlm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/cd_monitors.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/cd_monitors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/cd_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/cd_solve.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/cg_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/cg_solve.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/qcinv/multigrid.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/multigrid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/opfilt_pp.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/opfilt_pp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/opfilt_pp_multi_simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/opfilt_pp_multi_simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/opfilt_tp.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/opfilt_tp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/opfilt_tt.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/opfilt_tt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/opfilt_tt_multi_simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/opfilt_tt_multi_simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/util_alm.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/util_alm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qcinv/util_vlm.py" beforeDir="false" afterPath="$PROJECT_DIR$/qcinv/util_vlm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -49,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/qcinv/multigrid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="41" column="35" selection-start-line="41" selection-start-column="35" selection-end-line="41" selection-end-column="35" />
+            <state relative-caret-position="419">
+              <caret line="81" column="22" selection-start-line="81" selection-start-column="22" selection-end-line="81" selection-end-column="22" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -138,6 +113,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
@@ -214,8 +190,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/qcinv/multigrid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="41" column="35" selection-start-line="41" selection-start-column="35" selection-end-line="41" selection-end-column="35" />
+        <state relative-caret-position="419">
+          <caret line="81" column="22" selection-start-line="81" selection-start-column="22" selection-end-line="81" selection-end-column="22" />
           <folding>
             <element signature="e#0#30#0" expanded="true" />
           </folding>
