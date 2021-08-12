@@ -59,7 +59,7 @@ class multigrid_chain():
 
         #self.opfilt.apply_fini( soltn, self.s_cls, self.n_inv_filt )
 
-    def sample(self, soltn, tpn_map, fluctuations, pol = False):
+    def sample(self, soltn, tpn_map, fluctuations, pol = False, temp = False):
         self.watch = util.stopwatch()
 
         self.iter_tot   = 0
@@ -75,7 +75,11 @@ class multigrid_chain():
         if pol:
             tpn_alm.elm += fluctuations["elm"]
             tpn_alm.blm += fluctuations["blm"]
-            
+        if pol and temp:
+            tpn_alm.tlm += fluctuations["tlm"]
+            tpn_alm.elm += fluctuations["elm"]
+            tpn_alm.blm += fluctuations["blm"]
+
         fwd_op = self.opfilt.fwd_op(self.s_cls, self.n_inv_filt)
 
         cd_solve.cd_solve( soltn, tpn_alm,

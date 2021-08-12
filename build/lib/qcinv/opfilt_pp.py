@@ -62,7 +62,7 @@ def calc_prep(maps, s_cls, n_inv_filt):
     qmap, umap = np.copy(maps[0]), np.copy(maps[1])
     assert(len(qmap) == len(umap))
     npix  = len(qmap)
-    
+
     n_inv_filt.apply_map([qmap, umap])
 
     lmax  = len(n_inv_filt.b_transf) - 1
@@ -73,6 +73,7 @@ def calc_prep(maps, s_cls, n_inv_filt):
 
     hp.almxfl( elm, n_inv_filt.b_transf, inplace=True )
     hp.almxfl( blm, n_inv_filt.b_transf, inplace=True )
+
     return eblm([elm, blm])
 
 def apply_fini(alm, s_cls, n_inv_filt):
@@ -365,7 +366,6 @@ class alm_filter_ninv():
         
     def apply_map(self, amap):
         [qmap, umap] = amap
-        
         # applies N^{-1}
         if (False):
             pass
